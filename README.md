@@ -6,11 +6,11 @@
 [![Codecov test coverage](https://codecov.io/gh/scottsun417/myrpackage/branch/main/graph/badge.svg)](https://app.codecov.io/gh/scottsun417/myrpackage?branch=main)
 <!-- badges: end -->
 
-The goal of rpackage625 is to implement a logistic regression used for modelling categorical data, by calling an own writing R function named 'manual_logistic_regression'. This function assuming the response variable Y falls into exactly two categories, Y = 1 and the other by Y = 0.
+The goal of <mark>rpackage625</mark> is to implement a logistic regression used for modelling categorical data, by calling an own writing R function named <mark>manual_logistic_regression</mark>. This function assuming the response variable Y falls into exactly two categories, Y = 1 and the other by Y = 0.
 
 ## Installation
 
-To use the package, you can install the development version of rpackage625 from [GitHub](https://github.com/) with:
+To use the package, you can install the development version of <mark>rpackage625</mark> from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -19,7 +19,7 @@ devtools::install_github("scottsun417/myrpackage")
 
 ## Example
 
-This is a basic example which shows you how to use the function manual_logistic_regression in rpackage625:
+This is a basic example which shows you how to use the function <mark>manual_logistic_regression</mark> in <mark>rpackage625</mark>:
 
 ``` r
 # library the rpackage625
