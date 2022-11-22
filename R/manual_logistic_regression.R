@@ -35,6 +35,9 @@
 #'@return AIC: Akaike Information Criterion
 #'@return number_iterations: the number of iterations
 #'
+#'@importFrom stats fivenum
+#'@importFrom stats pnorm
+#'
 #'@examples
 #'set.seed(2022)
 #'x1 = rnorm(30,3,2) + 0.1*c(1:30)
