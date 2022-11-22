@@ -1,8 +1,9 @@
 #'manual_logistic_regression
 #'
 #'This is an function named 'manual_logistic_regression' which implements a logistic regression
-#'used for modelling categorical data. This function assuming the response variable Y
-#'falls into exactly two categories, Y = 1 and the other by Y = 0.
+#'used for modelling categorical data and returns a list containing sufficient model summary information.
+#'This function assuming the response variable Y falls into exactly two categories, Y = 1 and
+#'the other by Y = 0.
 #'
 #'@param x input value, predictors preferred in a matrix form
 #'@param y input value, response vector consists only of 0 and 1

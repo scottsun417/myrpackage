@@ -58,8 +58,9 @@ number_iterations: the number of iterations
 }
 \description{
 This is an function named 'manual_logistic_regression' which implements a logistic regression
-used for modelling categorical data. This function assuming the response variable Y
-falls into exactly two categories, Y = 1 and the other by Y = 0.
+used for modelling categorical data and returns a list containing sufficient model summary information.
+This function assuming the response variable Y falls into exactly two categories, Y = 1 and
+the other by Y = 0.
 }
 \examples{
 set.seed(2022)
