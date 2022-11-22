@@ -12,6 +12,7 @@
 #'@export
 #'
 
+
 # Newton-Raphson Method
 manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) {
 
