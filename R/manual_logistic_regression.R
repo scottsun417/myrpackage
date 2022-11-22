@@ -1,18 +1,52 @@
 #'manual_logistic_regression
 #'
-#'This is an function named 'manual_logistic_regression' which xxx
+#'This is an function named 'manual_logistic_regression' which implements a logistic regression
+#'used for modelling categorical data. This function assuming the response variable Y
+#'falls into exactly two categories, Y = 1 and the other by Y = 0.
 #'
-#'@param x input value
+#'@param x input value, predictors preferred in a matrix form
+#'@param y input value, response vector consists only of 0 and 1
+#'@param threshold input value, a numeric value checking if the logistic regression algorithm is
+#'converging or not (the amount of beta changes should get smaller and smaller with each iteration,
+#'eventually falling below the threshold), default threshold = 1e-10
+#'@param max_iter input value, the maximum number of iterations, default max_iter = 100
 #'
-#'@return the square of x
+#'@return A list containing model summary information, including:
+#'@return coefficients: estimated parameters for intercept and each variable (predictor),
+#'according to the response
+#'@return covariance_matrix: used to derive the standard errors and confidence intervals of the
+#'fitted model's coefficient estimates
+#'@return Dispersion: dispersion parameter for binomial family taken to be 1
+#'@return standard_error: standard error for intercept and each variable (predictor),
+#'according to the response
+#'@return t_statistics: test statistics for intercept and each variable (predictor),
+#'according to the response
+#'@return p_value: P-value for intercept and each variable (predictor), according to the response
+#'@return deviance_residuals: measuring how much probabilities estimated from fitted model differ
+#'from the observed proportions of successes
+#'@return quantile_deviance_residuals: a five-number summary of the residuals, including Minimum,
+#'1st Quantile, Median, 3rd Quantile and Maximum, respectively
+#'@return Null_deviance_degrees_of_freedom: the degrees of freedom of Null deviance
+#'@return Residual_deviance_degrees_of_freedom: the degrees of freedom of Residual deviance
+#'@return Null_deviance: measuring how well the response variable can be predicted by a model with
+#'only an intercept term
+#'@return Residual_deviance: measuring how well the response variable is predicted by the model when the
+#'predictors are included
+#'@return AIC: Akaike Information Criterion
+#'@return number_iterations: the number of iterations
 #'
 #'@examples
-#'square(3)
+#'set.seed(2022)
+#'x1 = rnorm(30,3,2) + 0.1*c(1:30)
+#'x2 = rbinom(30, 1,0.3)
+#'x3 = rpois(n = 30, lambda = 4)
+#'x3[16:30] = x3[16:30] - rpois(n = 15, lambda = 2)
+#'x = cbind(x1,x2,x3)
+#'y = c(rbinom(5, 1,0.1),rbinom(10, 1,0.25),rbinom(10, 1,0.75),rbinom(5, 1,0.9))
+#'manual_glm <- manual_logistic_regression(x, y)
 #'
 #'@export
 #'
-
-
 # Newton-Raphson Method
 manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) {
 
@@ -63,7 +97,7 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
     #see if we've hit the maximum number of iterations
     iter_count = iter_count + 1
     if(iter_count > max_iter) {
-      break
+      stop("Not Converging")
     }
   }
 
@@ -97,7 +131,7 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
   dev_res = sign(y-pred_p) * ifelse(y==1,sqrt(-2*log(pred_p)),sqrt(-2*log(1-pred_p)))
 
   # summary of deviance residuals
-  sum_dev_res = summary(dev_res)
+  sum_dev_res = fivenum(dev_res)
 
   # Residual deviance
   res_dev = -2*sum(y*log(pred_p) + (1 - y)*log(1 - pred_p))
