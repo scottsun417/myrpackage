@@ -166,33 +166,8 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
            Residual_deviance = res_dev,
            AIC = AIC,
            number_iterations = fisher_scoring_iterations
-  )
+           )
 
   return(z)
 
 }
-
-set.seed(2022)
-#simulate data
-#independent variables
-x1 = rnorm(30,3,2) + 0.1*c(1:30)
-x2 = rbinom(30, 1,0.3)
-x3 = rpois(n = 30, lambda = 4)
-x3[16:30] = x3[16:30] - rpois(n = 15, lambda = 2)
-
-#dependent variable
-y = c(rbinom(5, 1,0.1),rbinom(10, 1,0.25),rbinom(10, 1,0.75),rbinom(5, 1,0.9))
-
-x = cbind(x1,x2,x3)
-
-manual_logistic_regression(x,y)
-summary(glm(y~x1+x2+x3, family = "binomial"))
-
-#vcov(glm(y~x1+x2+x3, family = "binomial"))
-
-# McFadden's pseudo R^2
-#  r2Log = 1 - dev_res / dev_null
-#           R_squared = r2Log,
-
-# p-value for the chi^2
-#  p_value_chi = 1 - pchisq(res_dev, df_residual)
