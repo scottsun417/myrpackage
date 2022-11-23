@@ -57,7 +57,7 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
 
   # a function to return p, given x and beta
   # we will need this function in the iteration section
-  calc_p = function(x,beta) {
+  prob = function(x,beta) {
     beta = as.vector(beta)
     p = exp(x%*%beta) / (1 + exp(x%*%beta))
     return(p)
@@ -78,7 +78,7 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
   # initial value bigger than threshold so that we can do the while loop
   diff = 10000
 
-  # counter to ensure not in an infinite loop during iterative
+  # counter to ensure not in an infinite loop during iteration
   iter_count = 0
 
   #### Iteration ####
@@ -87,10 +87,10 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
   while(diff > threshold) {
 
     # calculate probabilities using current estimate of beta
-    p = as.vector(calc_p(x,beta))
+    p = as.vector(prob(x,beta))
 
     # calculate matrix of weights w
-    w =  diag(p*(1-p))
+    w = diag(p*(1-p))
 
     # calculate the change in beta
     beta_change = solve(t(x)%*%w%*%x) %*% t(x)%*%(y-p)
