@@ -54,56 +54,61 @@
 # Newton-Raphson Method
 manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) {
 
-  #A function to return p, given X and beta
-  #We'll need this function in the iterative section
+  # a function to return p, given x and beta
+  # we will need this function in the iteration section
   calc_p = function(x,beta) {
     beta = as.vector(beta)
     p = exp(x%*%beta) / (1 + exp(x%*%beta))
     return(p)
   }
 
-  #### setup bit ####
-  #make sure x is in matrix form
+  #### Setup ####
+
+  # make sure x in matrix form
   x = as.matrix(x)
 
-  #bias in order to calculate the intercept
+  # bias in order to calculate the intercept
   x0 = rep(1,30)
   x = cbind(x0,x)
 
-  #initial guess for beta
+  # initial guess for beta
   beta = rep(0,ncol(x))
 
-  #initial value bigger than threshold so that we can enter our while loop
+  # initial value bigger than threshold so that we can do the while loop
   diff = 10000
 
-  #counter to ensure we're not stuck in an infinite loop
+  # counter to ensure not in an infinite loop during iterative
   iter_count = 0
 
-  #### iterative bit ####
-  while(diff > threshold) { #tests for convergence
+  #### Iteration ####
 
-    #calculate probabilities using current estimate of beta
+  # do when convergence (check converging or not)
+  while(diff > threshold) {
+
+    # calculate probabilities using current estimate of beta
     p = as.vector(calc_p(x,beta))
 
-    #calculate matrix of weights W
+    # calculate matrix of weights w
     w =  diag(p*(1-p))
 
-    #calculate the change in beta
+    # calculate the change in beta
     beta_change = solve(t(x)%*%w%*%x) %*% t(x)%*%(y-p)
 
-    #update beta
+    # update beta
     beta = beta + beta_change
 
-    #calculate how much we changed beta by in this iteration
-    #if this is less than threshold, we'll break the while loop
+    # calculate how much we changed beta by in this iteration
+    # if this is less than threshold, we will break the while loop
     diff = sum(beta_change^2)
 
-    #see if we've hit the maximum number of iterations
+    # see if it reach the maximum number of iterations
     iter_count = iter_count + 1
     if(iter_count > max_iter) {
-      stop("Not Converging")
+      return(cat("Not Converging"))
     }
   }
+
+  #### Outcome ####
 
   # parameter coefficients
   coef = c("(Intercept)" = beta[1], x = beta[-1])
@@ -129,9 +134,9 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
   p_value = c("(Intercept)" = pvalue[1], x = pvalue[-1])
 
   # Deviance Residuals
-  # The calculate predicted probabilities
+  # the calculate predicted probabilities
   pred_p = exp(x%*%beta) / (1 + exp(x%*%beta))
-  # Apply formula for deviance residuals
+  # apply formula for deviance residuals
   dev_res = sign(y-pred_p) * ifelse(y==1,sqrt(-2*log(pred_p)),sqrt(-2*log(1-pred_p)))
 
   # summary of deviance residuals
@@ -151,6 +156,8 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
 
   # Akaike Information Criterion
   AIC = 2*ncol(x) + res_dev
+
+  #### Return list ####
 
   z = list(coefficients = coef,
            covariance_matrix = covariance_matrix,

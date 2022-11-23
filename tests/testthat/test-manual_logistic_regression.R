@@ -21,4 +21,5 @@ test_that("manual_logistic_regression works", {
   expect_equal(round(manual_logistic_regression(x, y)$Null_deviance,4), 40.3807)
   expect_equal(round(manual_logistic_regression(x, y)$Residual_deviance,5), 40.15877)
   expect_equal(round(manual_logistic_regression(x, y)$AIC, 3), 48.159)
+  expect_equal(manual_logistic_regression(x, y, max_iter=1), NULL)
 })
