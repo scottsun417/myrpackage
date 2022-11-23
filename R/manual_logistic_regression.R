@@ -38,6 +38,7 @@
 #'
 #'@importFrom stats fivenum
 #'@importFrom stats pnorm
+#'@importFrom bench mark
 #'
 #'@examples
 #'set.seed(2022)
@@ -108,7 +109,7 @@ manual_logistic_regression <- function(x, y, threshold = 1e-10, max_iter = 100) 
     }
   }
 
-  #### Outcome ####
+  #### Summary ####
 
   # parameter coefficients
   coef = c("(Intercept)" = beta[1], x = beta[-1])

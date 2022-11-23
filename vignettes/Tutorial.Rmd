@@ -51,10 +51,46 @@ print(manual_glm)
 ```{r}
 auto_glm <- glm(y~x1+x2+x3, family = "binomial")
 summary(auto_glm)
+
+all.equal(class(manual_logistic_regression(x, y)), "list")
+all.equal(round(manual_logistic_regression(x, y)$coefficients[[1]],6), -0.576170)
+all.equal(round(manual_logistic_regression(x, y)$covariance_matrix[1,1],7), 1.2380262)
+all.equal(manual_logistic_regression(x, y)$Dispersion, 1)
+all.equal(round(manual_logistic_regression(x, y)$standard_error[[1]],6), 1.112666)
+all.equal(round(manual_logistic_regression(x, y)$t_statistics[[1]],3), -0.518)
+all.equal(round(manual_logistic_regression(x, y)$p_value[[1]],3), 0.605)
+all.equal(round(manual_logistic_regression(x, y)$deviance_residuals[[1]],7), -0.9638035)
+all.equal(round(manual_logistic_regression(x, y)$quantile_deviance_residuals[1],4), -1.1308)
+all.equal(manual_logistic_regression(x, y)$Null_deviance_degrees_of_freedom, 29)
+all.equal(manual_logistic_regression(x, y)$Residual_deviance_degrees_of_freedom, 26)
+all.equal(round(manual_logistic_regression(x, y)$Null_deviance,4), 40.3807)
+all.equal(round(manual_logistic_regression(x, y)$Residual_deviance,5), 40.15877)
+all.equal(round(manual_logistic_regression(x, y)$AIC, 3), 48.159)
+all.equal(manual_logistic_regression(x, y, max_iter=1), NULL)
 ```
 
 ## Comparison: Efficiency
-```{r}
+```{r warning=FALSE}
+#### case 1 ####
+
+# data simulation
+set.seed(2022)
+x1 = rnorm(30,3,2) + 0.1*c(1:30)
+x2 = rbinom(30,1,0.3)
+x3 = rpois(n = 30, lambda = 4)
+x3[16:30] = x3[16:30] - rpois(n = 15, lambda = 2)
+x = cbind(x1,x2,x3)
+y = c(rbinom(5,1,0.1),rbinom(10,1,0.25),rbinom(10,1,0.75),rbinom(5,1,0.9))
+
+# test efficiency by system.time
+system.time(manual_glm <- manual_logistic_regression(x, y))
+system.time(auto_glm <- summary(glm(y~x1+x2+x3, family = "binomial")))
+
+# test efficiency by bench::mark
+bench::mark(manual_glm <- manual_logistic_regression(x, y)$Residual_deviance, auto_glm <- summary(glm(y~x1+x2+x3, family = "binomial"))$deviance)$total_time
+
+#### case 2 ####
+
 # data simulation
 set.seed(2022)
 x1 = rnorm(3000,2,1) + 0.2*c(1:3000)
@@ -66,23 +102,12 @@ x5 = rbinom(3000,1,0.3)
 x = cbind(x1,x2,x3,x4,x5)
 y = c(rbinom(500,1,0.1),rbinom(1000,1,0.25),rbinom(1000,1,0.75),rbinom(500,1,0.9))
 
-# test efficiency
+# test efficiency by system.time
 system.time(manual_glm <- manual_logistic_regression(x, y))
 system.time(auto_glm <- summary(glm(y~x1+x2+x3+x4+x5, family = "binomial")))
 
-set.seed(2022)
-x1 = rnorm(300,3,2) + 0.1*c(1:300)
-x2 = rbinom(300,1,0.3)
-x3 = rpois(n = 300, lambda = 4)
-x3[16:300] = x3[16:300] - rpois(n = 15, lambda = 2)
-x = cbind(x1,x2,x3)
-y = c(rbinom(50,1,0.1),rbinom(100,1,0.25),rbinom(100,1,0.75),rbinom(50,1,0.9))
-
-manual_logistic_regression(x, y)
-summary(glm(y~x1+x2+x3, family = "binomial"))
-
-system.time(manual_glm <- manual_logistic_regression(x, y))
-system.time(auto_glm <- summary(glm(y~x1+x2+x3, family = "binomial")))
+# test efficiency by bench::mark
+bench::mark(manual_glm <- manual_logistic_regression(x, y)$Residual_deviance, auto_glm <- summary(glm(y~x1+x2+x3+x4+x5, family = "binomial"))$deviance)$total_time
 ```
 
-**Comparing to original function, the function 'manual_logistic_regression' is correct and more efficient.**
+**Comparing to the original function glm(), the function 'manual_logistic_regression' outputs the model summary correctly. For the efficiency, with a small dataset, function 'manual_logistic_regression' is as efficient as the original function glm(), while the original function would be more efficient when there are large data enter. Therefore, Rcpp is needed to further optimize and improve efficiency.**
